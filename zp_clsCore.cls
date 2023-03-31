@@ -61,18 +61,20 @@ Private xPIndent As String
 Private xLastTS As String
 Private xStartTS As Double
 
+Private xLogFile As zp_clsFile
+
 
 '// Log object used to generate log messages and publish
 '// them through the log.msg Event.
 Public log As New zp_clsLog
 
 '// Turn tracing on
-Public Sub start()
+Public Sub startLog()
     xTracing = True
 End Sub
 
 '// Turn tracing off
-Public Sub pause()
+Public Sub pauseLog()
     xTracing = False
 End Sub
 
@@ -81,8 +83,20 @@ Public Sub sendLogToDebug(Optional ByVal YN As Variant = Empty)
     If Not IsEmpty(YN) Then
         log.sendToDebug = YN
     End If
-    
 End Sub
+
+Public Property Get logFile()
+    
+End Property
+
+
+'// Creates an output text file and directs stackTrace messages into that file
+Public Function sendLogToFile(Optional logFilePath As String = "") As zp_clsFile
+    Set xLogFile = New zp_clsFile
+    xLogFile.writeFromLog log, logFilePath
+    
+End Function
+
 
 '// Entry function called to write the entry log message and create a tracer object.
 Public Function enter(Optional label As String = "") As zp_clsT
@@ -120,7 +134,7 @@ Public Function enter(Optional label As String = "") As zp_clsT
     
     xPIndent = milliSecs & xIndent
     '// Write the entry line to the log
-    log.msgOut il2 & xPIndent & " \>>> Enter " & label
+    log.msgOut il2 & xPIndent & "|>| Enter " & label
     
     '// Add to the indent string
     xIndent = xIndent & " ."
@@ -140,7 +154,7 @@ Public Sub exit_(oT As zp_clsT)
     
     
     xPIndent = milliSecs & xIndent
-    log.msgOut il2 & xPIndent & " /<<< Exit " & oT.label
+    log.msgOut il2 & xPIndent & "|<| Exit " & oT.label
     xIndentLevel = xIndentLevel - 1
     If xIndentLevel = 0 Then log.msgOut "    " & Now
     
