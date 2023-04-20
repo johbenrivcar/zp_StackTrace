@@ -164,7 +164,7 @@ End Sub
 Public Sub TSMessage()
     Dim tsIndent As String: tsIndent = Replace(xIndent, ".", "+")
     tsIndent = milliSecs & tsIndent
-    log.msgOut il2 & tsIndent & "| TSMessage " & xLastTS
+    log.msgOut il2 & tsIndent & "| Time " & xLastTS
     
     
 End Sub
